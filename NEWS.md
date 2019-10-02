@@ -1,5 +1,9 @@
 # rpx 1.20
 
+## rpx 1.20.2
+- Temporary fix for issue #5 (wrong URL from PRIDE server)
+  <2019-10-02 Wed>
+
 ## rpx 1.20.1
 - Don't set old class <2019-08-09 Fri>
 
