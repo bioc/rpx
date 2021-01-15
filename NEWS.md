@@ -1,16 +1,12 @@
-# rpx 1.99.0
+# rpx 1.26
 
-## rpx 1.99.2
-- Don't ask for cache location in non-interactive mode. This forces
-  the usage of the default cache location (rather than usage of a Rtmp
-  directory) and enables reusage of a persistent cache over different
-  build/check cycles.
+## rpx 1.26.1
 
-## rpx 1.99.1
-- Using BiocFileCache to cache PXD files that are downloaded.
+- Using BiocFileCache to cache PXD files that are downloaded
+  (backported from devel 1.99.2).
 
-## Changes in version 1.27.0
-- New devel version
+## Changes in version 1.26.0
+- New release version
 
 # rpx 1.23
 
@@ -123,7 +119,7 @@
 ## Changes in version 1.11.3
 
 - `pxget` gains a `destdir` argument to specify the destination to which files
-	should be downloaded <2017-01-27 Fri>
+    should be downloaded <2017-01-27 Fri>
 
 ## Changes in version 1.11.2
 
