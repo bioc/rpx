@@ -1,5 +1,10 @@
 # rpx 1.26
 
+## rpx 1.26.2
+
+- Use `MS:1002852` to get URL when `PRIDE:0000411` returns empty
+  string.
+
 ## rpx 1.26.1
 
 - Using BiocFileCache to cache PXD files that are downloaded
