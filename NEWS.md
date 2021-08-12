@@ -1,6 +1,6 @@
-# rpx 2.1
+# rpx 2.0
 
-## rpx 2.1.1
+## rpx 2.0.1
 
 - `pxannouced()` paused (see #7).
 
