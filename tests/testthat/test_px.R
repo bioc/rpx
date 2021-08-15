@@ -1,6 +1,7 @@
-test_that("PXD000001", {
+px1 <- PXDataset("PXD000001")
+
+test_that("Object content is valid.", {
     id <- "PXD000001"
-    px1 <- PXDataset(id)
     expect_null(show(px1))
     expect_identical(pxid(px1), id)
     ## Assertions manually looked up at
@@ -21,16 +22,14 @@ test_that("PXD000001", {
     expect_identical(sort(pxf), fls)
     expect_identical(pxtax(px1), "Erwinia carotovora")
     expect_identical(pxurl(px1), url)
-    ref <- "Gatto L, Christoforou A. Using R and Bioconductor for proteomics data analysis. Biochim Biophys Acta. 2014 1844(1 pt a):42-51"
-    if (grepl("archive", pxurl(px1)))
-        ref <- "Gatto L, Christoforou A. Using R and Bioconductor for proteomics data analysis. Biochim Biophys Acta. 2013 May 18. doi:pii: S1570-9639(13)00186-6. 10.1016/j.bbapap.2013.04.032"
+    ref <- "Gatto L, Christoforou A. Using R and Bioconductor for proteomics data analysis. Biochim Biophys Acta. 2013 May 18. doi:pii: S1570-9639(13)00186-6. 10.1016/j.bbapap.2013.04.032"
     expect_identical(pxref(px1), ref)
     fa <- pxget(px1, "erwinia_carotovora.fasta")
     expect_equal(length(Biostrings::readAAStringSet(fa)), 4499)
 })
 
 test_that("PXD version", {
-    p <- PXDataset("PXD000001")
+    p <- px1
     ver_1 <- "1.3.0"
     if (grepl("archive", pxurl(p)))
         ver_1 <- "1.0.0"
@@ -50,249 +49,13 @@ test_that("PX announcements", {
 
 test_that("PX identifiers", {
     expect_error(PXDataset("P1"))
-    expect_warning(px1 <- PXDataset("1"))
-    expect_warning(px2 <- PXDataset("PXD1"))
-    px3 <- PXDataset("PXD000001")
-    expect_equal(px1, px2)
-    expect_equal(px1, px3)
+    ## expect_warning(px01 <- PXDataset("1"))
+    px01 <- PXDataset("1")
+    expect_equal(px01, px1)
+    ## expect_warning(px02 <- PXDataset("PXD1"))
+    px02 <- PXDataset("PXD1")
+    expect_equal(px01, px02)
 })
-
-## test_that("PX nodes", {
-##     px1 <- PXDataset("PXD000001")
-##     nd <- pxnodes(px1)
-##     nd0 <- c("CvList", "ChangeLog", "DatasetSummary",
-##              "DatasetIdentifierList", "DatasetOriginList", "SpeciesList",
-##              "InstrumentList", "ModificationList", "ContactList",
-##              "PublicationList", "KeywordList", "FullDatasetLinkList",
-##              "DatasetFileList", "RepositoryRecordList")
-##     expect_identical(nd, nd0)
-##     cvnd <- pxnodes(px1, "CvList")
-##     expect_identical(cvnd, rep("Cv", 4))
-##     allnd <- pxnodes(px1, all = TRUE)
-##     allnd0 <-
-##         c("/CvList/name", "/CvList//Cv/name",
-##           "/CvList//Cv/attributes/fullName", "/CvList//Cv/attributes/uri",
-##           "/CvList//Cv/attributes/id", "/CvList//Cv/name",
-##           "/CvList//Cv/attributes/fullName", "/CvList//Cv/attributes/uri",
-##           "/CvList//Cv/attributes/id", "/CvList//Cv/name",
-##           "/CvList//Cv/attributes/fullName", "/CvList//Cv/attributes/uri",
-##           "/CvList//Cv/attributes/id", "/CvList//Cv/name",
-##           "/CvList//Cv/attributes/fullName", "/CvList//Cv/attributes/uri",
-##           "/CvList//Cv/attributes/id", "/ChangeLog/name",
-##           "/ChangeLog//ChangeLogEntry/name",
-##           "/ChangeLog//ChangeLogEntry/attributes/date",
-##           "/ChangeLog//ChangeLogEntry//text/name",
-##           "/ChangeLog//ChangeLogEntry//text/value", "/DatasetSummary/name",
-##           "/DatasetSummary/attributes/announceDate",
-##           "/DatasetSummary/attributes/hostingRepository",
-##           "/DatasetSummary/attributes/title",
-##           "/DatasetSummary//Description/name",
-##           "/DatasetSummary//Description//text/name",
-##           "/DatasetSummary//Description//text/value",
-##           "/DatasetSummary//ReviewLevel/name",
-##           "/DatasetSummary//ReviewLevel//cvParam/name",
-##           "/DatasetSummary//ReviewLevel//cvParam/attributes/cvRef",
-##           "/DatasetSummary//ReviewLevel//cvParam/attributes/accession",
-##           "/DatasetSummary//ReviewLevel//cvParam/attributes/name",
-##           "/DatasetSummary//RepositorySupport/name",
-##           "/DatasetSummary//RepositorySupport//cvParam/name",
-##           "/DatasetSummary//RepositorySupport//cvParam/attributes/cvRef",
-##           "/DatasetSummary//RepositorySupport//cvParam/attributes/accession",
-##           "/DatasetSummary//RepositorySupport//cvParam/attributes/name",
-##           "/DatasetIdentifierList/name",
-##           "/DatasetIdentifierList//DatasetIdentifier/name",
-##           "/DatasetIdentifierList//DatasetIdentifier//cvParam/name",
-##           "/DatasetIdentifierList//DatasetIdentifier//cvParam/attributes/cvRef",
-##           "/DatasetIdentifierList//DatasetIdentifier//cvParam/attributes/accession",
-##           "/DatasetIdentifierList//DatasetIdentifier//cvParam/attributes/name",
-##           "/DatasetIdentifierList//DatasetIdentifier//cvParam/attributes/value",
-##           "/DatasetIdentifierList//DatasetIdentifier/name",
-##           "/DatasetIdentifierList//DatasetIdentifier//cvParam/name",
-##           "/DatasetIdentifierList//DatasetIdentifier//cvParam/attributes/cvRef",
-##           "/DatasetIdentifierList//DatasetIdentifier//cvParam/attributes/accession",
-##           "/DatasetIdentifierList//DatasetIdentifier//cvParam/attributes/name",
-##           "/DatasetIdentifierList//DatasetIdentifier//cvParam/attributes/value",
-##           "/DatasetOriginList/name", "/DatasetOriginList//DatasetOrigin/name",
-##           "/DatasetOriginList//DatasetOrigin//cvParam/name",
-##           "/DatasetOriginList//DatasetOrigin//cvParam/attributes/cvRef",
-##           "/DatasetOriginList//DatasetOrigin//cvParam/attributes/accession",
-##           "/DatasetOriginList//DatasetOrigin//cvParam/attributes/name",
-##           "/SpeciesList/name", "/SpeciesList//Species/name",
-##           "/SpeciesList//Species//cvParam/name",
-##           "/SpeciesList//Species//cvParam/attributes/cvRef",
-##           "/SpeciesList//Species//cvParam/attributes/accession",
-##           "/SpeciesList//Species//cvParam/attributes/name",
-##           "/SpeciesList//Species//cvParam/attributes/value",
-##           "/SpeciesList//Species//cvParam/name",
-##           "/SpeciesList//Species//cvParam/attributes/cvRef",
-##           "/SpeciesList//Species//cvParam/attributes/accession",
-##           "/SpeciesList//Species//cvParam/attributes/name",
-##           "/SpeciesList//Species//cvParam/attributes/value",
-##           "/InstrumentList/name", "/InstrumentList//Instrument/name",
-##           "/InstrumentList//Instrument/attributes/id",
-##           "/InstrumentList//Instrument//cvParam/name",
-##           "/InstrumentList//Instrument//cvParam/attributes/cvRef",
-##           "/InstrumentList//Instrument//cvParam/attributes/accession",
-##           "/InstrumentList//Instrument//cvParam/attributes/name",
-##           "/InstrumentList//Instrument//cvParam/attributes/value",
-##           "/InstrumentList//Instrument/name",
-##           "/InstrumentList//Instrument/attributes/id",
-##           "/InstrumentList//Instrument//cvParam/name",
-##           "/InstrumentList//Instrument//cvParam/attributes/cvRef",
-##           "/InstrumentList//Instrument//cvParam/attributes/accession",
-##           "/InstrumentList//Instrument//cvParam/attributes/name",
-##           "/ModificationList/name", "/ModificationList//cvParam/name",
-##           "/ModificationList//cvParam/attributes/cvRef",
-##           "/ModificationList//cvParam/attributes/accession",
-##           "/ModificationList//cvParam/attributes/name",
-##           "/ModificationList//cvParam/name",
-##           "/ModificationList//cvParam/attributes/cvRef",
-##           "/ModificationList//cvParam/attributes/accession",
-##           "/ModificationList//cvParam/attributes/name",
-##           "/ModificationList//cvParam/name",
-##           "/ModificationList//cvParam/attributes/cvRef",
-##           "/ModificationList//cvParam/attributes/accession",
-##           "/ModificationList//cvParam/attributes/name", "/ContactList/name",
-##           "/ContactList//Contact/name", "/ContactList//Contact/attributes/id",
-##           "/ContactList//Contact//cvParam/name",
-##           "/ContactList//Contact//cvParam/attributes/cvRef",
-##           "/ContactList//Contact//cvParam/attributes/accession",
-##           "/ContactList//Contact//cvParam/attributes/name",
-##           "/ContactList//Contact//cvParam/attributes/value",
-##           "/ContactList//Contact//cvParam/name",
-##           "/ContactList//Contact//cvParam/attributes/cvRef",
-##           "/ContactList//Contact//cvParam/attributes/accession",
-##           "/ContactList//Contact//cvParam/attributes/name",
-##           "/ContactList//Contact//cvParam/attributes/value",
-##           "/ContactList//Contact//cvParam/name",
-##           "/ContactList//Contact//cvParam/attributes/cvRef",
-##           "/ContactList//Contact//cvParam/attributes/accession",
-##           "/ContactList//Contact//cvParam/attributes/name",
-##           "/ContactList//Contact//cvParam/attributes/value",
-##           "/ContactList//Contact//cvParam/name",
-##           "/ContactList//Contact//cvParam/attributes/cvRef",
-##           "/ContactList//Contact//cvParam/attributes/accession",
-##           "/ContactList//Contact//cvParam/attributes/name",
-##           "/PublicationList/name", "/PublicationList//Publication/name",
-##           "/PublicationList//Publication/attributes/id",
-##           "/PublicationList//Publication//cvParam/name",
-##           "/PublicationList//Publication//cvParam/attributes/cvRef",
-##           "/PublicationList//Publication//cvParam/attributes/accession",
-##           "/PublicationList//Publication//cvParam/attributes/name",
-##           "/PublicationList//Publication//cvParam/attributes/value",
-##           "/PublicationList//Publication//cvParam/name",
-##           "/PublicationList//Publication//cvParam/attributes/cvRef",
-##           "/PublicationList//Publication//cvParam/attributes/accession",
-##           "/PublicationList//Publication//cvParam/attributes/name",
-##           "/PublicationList//Publication//cvParam/attributes/value",
-##           "/KeywordList/name", "/KeywordList//cvParam/name",
-##           "/KeywordList//cvParam/attributes/cvRef",
-##           "/KeywordList//cvParam/attributes/accession",
-##           "/KeywordList//cvParam/attributes/name",
-##           "/KeywordList//cvParam/attributes/value",
-##           "/KeywordList//cvParam/name",
-##           "/KeywordList//cvParam/attributes/cvRef",
-##           "/KeywordList//cvParam/attributes/accession",
-##           "/KeywordList//cvParam/attributes/name",
-##           "/KeywordList//cvParam/attributes/value", "/FullDatasetLinkList/name",
-##           "/FullDatasetLinkList//FullDatasetLink/name",
-##           "/FullDatasetLinkList//FullDatasetLink//cvParam/name",
-##           "/FullDatasetLinkList//FullDatasetLink//cvParam/attributes/cvRef",
-##           "/FullDatasetLinkList//FullDatasetLink//cvParam/attributes/accession",
-##           "/FullDatasetLinkList//FullDatasetLink//cvParam/attributes/name",
-##           "/FullDatasetLinkList//FullDatasetLink//cvParam/attributes/value",
-##           "/FullDatasetLinkList//FullDatasetLink/name",
-##           "/FullDatasetLinkList//FullDatasetLink//cvParam/name",
-##           "/FullDatasetLinkList//FullDatasetLink//cvParam/attributes/cvRef",
-##           "/FullDatasetLinkList//FullDatasetLink//cvParam/attributes/accession",
-##           "/FullDatasetLinkList//FullDatasetLink//cvParam/attributes/name",
-##           "/FullDatasetLinkList//FullDatasetLink//cvParam/attributes/value",
-##           "/DatasetFileList/name", "/DatasetFileList//DatasetFile/name",
-##           "/DatasetFileList//DatasetFile/attributes/id",
-##           "/DatasetFileList//DatasetFile/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/cvRef",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/accession",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/value",
-##           "/DatasetFileList//DatasetFile/name",
-##           "/DatasetFileList//DatasetFile/attributes/id",
-##           "/DatasetFileList//DatasetFile/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/cvRef",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/accession",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/value",
-##           "/DatasetFileList//DatasetFile/name",
-##           "/DatasetFileList//DatasetFile/attributes/id",
-##           "/DatasetFileList//DatasetFile/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/cvRef",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/accession",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/value",
-##           "/DatasetFileList//DatasetFile/name",
-##           "/DatasetFileList//DatasetFile/attributes/id",
-##           "/DatasetFileList//DatasetFile/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/cvRef",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/accession",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/value",
-##           "/DatasetFileList//DatasetFile/name",
-##           "/DatasetFileList//DatasetFile/attributes/id",
-##           "/DatasetFileList//DatasetFile/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/cvRef",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/accession",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/value",
-##           "/DatasetFileList//DatasetFile/name",
-##           "/DatasetFileList//DatasetFile/attributes/id",
-##           "/DatasetFileList//DatasetFile/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/cvRef",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/accession",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/value",
-##           "/DatasetFileList//DatasetFile/name",
-##           "/DatasetFileList//DatasetFile/attributes/id",
-##           "/DatasetFileList//DatasetFile/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/cvRef",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/accession",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/value",
-##           "/DatasetFileList//DatasetFile/name",
-##           "/DatasetFileList//DatasetFile/attributes/id",
-##           "/DatasetFileList//DatasetFile/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/cvRef",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/accession",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/name",
-##           "/DatasetFileList//DatasetFile//cvParam/attributes/value",
-##           "/RepositoryRecordList/name",
-##           "/RepositoryRecordList//RepositoryRecord/name",
-##           "/RepositoryRecordList//RepositoryRecord/attributes/name",
-##           "/RepositoryRecordList//RepositoryRecord/attributes/label",
-##           "/RepositoryRecordList//RepositoryRecord/attributes/recordID",
-##           "/RepositoryRecordList//RepositoryRecord/attributes/repositoryID",
-##           "/RepositoryRecordList//RepositoryRecord/attributes/uri")
-##     expect_identical(allnd, allnd0)
-## })
-
-
-test_that("PXD000001: valid URLs and files", {
-    nfiles <- 11L
-    px1 <- PXDataset("PXD000001")
-    rpx:::apply_fix_issue_5(TRUE)
-    expect_identical(length(pxurl(px1)), 1L)
-    expect_identical(length(pxfiles(px1)), nfiles)
-    rpx:::apply_fix_issue_5(FALSE)
-    expect_identical(length(pxurl(px1)), 1L)
-    expect_identical(length(pxfiles(px1)), nfiles)
-})
-
 
 test_that("PXD022816: valid URLs and files", {
     nfiles <- 32L
@@ -303,4 +66,13 @@ test_that("PXD022816: valid URLs and files", {
     rpx:::apply_fix_issue_5(FALSE)
     expect_identical(length(pxurl(PXD022816)), 1L)
     expect_identical(length(pxfiles(PXD022816)), nfiles)
+})
+
+test_that("Object content is valid.", {
+    ## Add a resource with rname .rpxPXD000001 to a tmp cache
+    tmp_cache <- BiocFileCache::BiocFileCache(tempfile(), ask = FALSE)
+    path <- BiocFileCache::bfcnew(tmp_cache, rname = ".rpxPXD000001")
+    saveRDS(1, path)
+    ## Try to load if from cache
+    expect_error(p <- PXDataset("PXD000001", cache = tmp_cache))
 })

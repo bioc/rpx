@@ -1,7 +1,11 @@
 # rpx 2.0
 
-## rpx 2.0.1
+## rpx 2.0.2
 
+- The `PXDataset` stores all its attributes and is now also cached to
+  minimise access to the failing remote resource. Backported from
+  2.1.7.
+  
 - `pxannouced()` paused (see #7).
 
 # rpx 1.99.0

@@ -1,10 +1,10 @@
 Package: rpx
 Type: Package
 Title: R Interface to the ProteomeXchange Repository
-Version: 2.0.1
+Version: 2.0.2
 Authors@R: c(person(given = "Laurent", family = "Gatto",
                     email = "laurent.gatto@uclouvain.be",
-                    role = c("aut","cre")))
+                    role = c("aut", "cre")))
 Author: Laurent Gatto
 Maintainer: Laurent Gatto <laurent.gatto@uclouvain.be>
 Description: The rpx package implements an interface to proteomics
@@ -27,4 +27,6 @@ URL: https://github.com/lgatto/rpx
 BugReports: https://github.com/lgatto/rpx/issues
 VignetteBuilder: knitr
 biocViews: ImmunoOncology, Proteomics, MassSpectrometry, DataImport, ThirdPartyClient
-RoxygenNote: 6.1.0
+Encoding: UTF-8
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
