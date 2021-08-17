@@ -8,10 +8,14 @@
 \usage{
 rpxCache()
 
-pxCachedProjects(cache = rpxCache())
+pxCachedProjects(cache = rpxCache(), rpxprefix = "^\\\\.rpx(2?)")
 }
 \arguments{
 \item{cache}{Object of class \code{BiocFileCache}.}
+
+\item{rpxprefix}{\code{character(1)} defining the resourne name prefix
+in \code{cache}. Default is \code{"^\\\\.rpx(2?)"} to match objects of
+class \code{PXDataset} and \code{PXDataset2}.}
 }
 \value{
 The \code{rpxCache()} function returns an instance of class
@@ -32,8 +36,9 @@ provided by the user.
 When projects are cached, they are given a resource name (\code{rname})
 composed of the \code{.rpx} prefix followed by the ProteomeXchange
 identifier. For example, project \code{PXD000001} is named
-\code{.rpxPXD000001} to avoid any conflicts with other resources that
-user-created resources.
+\code{.rpxPXD000001} (\code{.rpx2PXD000001} for the \code{PXDataset2} class) to
+avoid any conflicts with other resources that user-created
+resources.
 }
 \examples{
 
@@ -44,28 +49,22 @@ rpxCache()
 ## BiocFileCache::BiocFileCache()
 my_cache <- BiocFileCache::BiocFileCache(tempfile())
 my_cache
-\dontrun{
 px <- PXDataset("PXD000001", cache = my_cache)
-pxget(px, "README.txt", cache = my_cache)
-}
+pxget(px, "erwinia_carotovora.fasta", cache = my_cache)
+
 
 ## List of cached projects
-pxCachedProjects()
+pxCachedProjects() ## default rpx cache
+pxCachedProjects(my_cache)
 
 ## To delete project a project from the default cache, first find
 ## its resource id (rid) in the cache
-(cache_tbl <- pxCachedProjects())
-(rid <- cache_tbl[cache_tbl$rname == ".rpxPXD000001", "rid"][[1]])
-
-## Alternatively, extact the information from the project
-px <- PXDataset("PXD000001")
 px1_cache_info <- pxCacheInfo(px)
 (rid <- px1_cache_info["rid"])
 
 ## Then remove it with BiocFileCache:: bfcremove()
-\dontrun{
-BiocFileCache:::bfcremove(rpxCache(), rid)
-}
+BiocFileCache:::bfcremove(my_cache, rid)
+pxCachedProjects(my_cache)
 }
 \author{
 Laurent Gatto

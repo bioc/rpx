@@ -1,12 +1,11 @@
 ##' @title The PXDataset to find and download proteomics data
 ##'
-##' @aliases class:PXDataset PXDataset
-##'     pxfiles,PXDataset-method pxfiles pxget,PXDataset-method pxget
-##'     pxid,PXDataset-method pxid pxref,PXDataset-method pxref
-##'     pxtax,PXDataset-method pxtax pxurl,PXDataset-method pxurl
-##'     show,PXDataset-method
+##' @aliases class:PXDataset PXDataset1 pxfiles,PXDataset-method
+##'     pxget,PXDataset-method pxid,PXDataset-method
+##'     pxref,PXDataset-method pxtax,PXDataset-method
+##'     pxurl,PXDataset-method show,PXDataset-method
 ##'
-##' @name PXDataset
+##' @name PXDataset1
 ##'
 ##' @description
 ##'
@@ -15,6 +14,8 @@
 ##' be achieved with `PXDataset` objects can be created with the
 ##' `PXDataset()` constructor that takes the unique ProteomeXchange
 ##' project identifier as input.
+##'
+##' The `PXDataset` class is being replaced by `PXDataset2`.
 ##'
 ##' @details
 ##'
@@ -168,85 +169,85 @@ setMethod("show", "PXDataset",
 ##' @param object An instance of class `PXDataset`, as created by
 ##'     `PXDataset()`.
 ##'
-##' @rdname PXDataset
+##' @rdname PXDataset1
 ##'
-##' @export
-pxid <- function(object) object@id
+##' @exportMethod pxid
+setMethod("pxid", "PXDataset", function(object) object@id)
 
-##' @rdname PXDataset
+##' @rdname PXDataset1
 ##'
-##' @export
-pxurl <- function(object) {
-    stopifnot(inherits(object, "PXDataset"))
-    if (is.null(object@cache$pxurl)) {
-        p <- "//cvParam[@accession = 'PRIDE:0000411']"
-        url <- xml_attr(xml_find_all(object@Data, p), "value")
-        if (!.valid_ftp_url(url)) {
-            url <- sub("ac\\.uk/", "ac\\.uk/pride/data/archive/", url)
-        }
-        if (!.valid_ftp_url(url)) {
-            p <- "//cvParam[@accession = 'MS:1002852']"
-            url <- xml_attr(xml_find_all(object@Data, p), "value")
-        }
-        if (!.valid_ftp_url(url)) {
-            stop("No URL detected: please open an issue at https://github.com/lgatto/rpx/issues")
-        }
-        names(url) <- NULL
-        object@cache$pxurl <- url
-    }
-    object@cache$pxurl
-}
+##' @exportMethod pxurl
+setMethod("pxurl", "PXDataset",
+          function(object) {
+              if (is.null(object@cache$pxurl)) {
+                  p <- "//cvParam[@accession = 'PRIDE:0000411']"
+                  url <- xml_attr(xml_find_all(object@Data, p), "value")
+                  if (!.valid_ftp_url(url)) {
+                      url <- sub("ac\\.uk/", "ac\\.uk/pride/data/archive/", url)
+                  }
+                  if (!.valid_ftp_url(url)) {
+                      p <- "//cvParam[@accession = 'MS:1002852']"
+                      url <- xml_attr(xml_find_all(object@Data, p), "value")
+                  }
+                  if (!.valid_ftp_url(url)) {
+                      stop("No URL detected: please open an issue at https://github.com/lgatto/rpx/issues")
+                  }
+                  names(url) <- NULL
+                  object@cache$pxurl <- url
+              }
+              object@cache$pxurl
+          })
 
-##' @rdname PXDataset
+##' @rdname PXDataset1
 ##'
-##' @export
-pxtax <- function(object) {
-    stopifnot(inherits(object, "PXDataset"))
-    if (is.null(object@cache$pxtax)) {
-        p <- "//cvParam[@accession = 'MS:1001469']"
-        tax <- xml_attr(xml_find_all(object@Data, p), "value")
-        names(tax) <- NULL
-        object@cache$pxtax <- tax
-    }
-    object@cache$pxtax
-}
+##' @exportMethod pxtax
+setMethod("pxtax", "PXDataset",
+          function(object) {
+              if (is.null(object@cache$pxtax)) {
+                  p <- "//cvParam[@accession = 'MS:1001469']"
+                  tax <- xml_attr(xml_find_all(object@Data, p), "value")
+                  names(tax) <- NULL
+                  object@cache$pxtax <- tax
+              }
+              object@cache$pxtax
+          })
 
 
-##' @rdname PXDataset
+##' @rdname PXDataset1
 ##'
-##' @export
-pxref <- function(object) {
-    stopifnot(inherits(object, "PXDataset"))
-    if (is.null(object@cache$pxref)) {
-        p <- "//cvParam[@accession = 'PRIDE:0000400']"
-        q <- "//cvParam[@accession = 'PRIDE:0000432']"
-        ref <- xml_attr(xml_find_all(object@Data, p), "value")
-        pendingref <- xml_attr(xml_find_all(object@Data, q), "value")
-        object@cache$pxref <- c(ref, pendingref)
-    }
-    object@cache$pxref
-}
+##' @exportMethod pxref
+setMethod("pxref", "PXDataset",
+          function(object) {
+              if (is.null(object@cache$pxref)) {
+                  p <- "//cvParam[@accession = 'PRIDE:0000400']"
+                  q <- "//cvParam[@accession = 'PRIDE:0000432']"
+                  ref <- xml_attr(xml_find_all(object@Data, p), "value")
+                  pendingref <- xml_attr(xml_find_all(object@Data, q), "value")
+                  object@cache$pxref <- c(ref, pendingref)
+              }
+              object@cache$pxref
+          })
 
-##' @rdname PXDataset
+##' @rdname PXDataset1
 ##'
 ##' @importFrom RCurl getURL
 ##'
-##' @export
-pxfiles <- function(object) {
-    stopifnot(inherits(object, "PXDataset"))
-    if (is.null(object@cache$pxfiles)) {
-        ftpdir <- paste0(pxurl(object), "/")
-        ans <- strsplit(getURL(ftpdir, dirlistonly = TRUE), "\n")[[1]]
-        if (Sys.info()['sysname'] == "Windows")
-            ans <- sub("\r$", "", ans)
-        ## Don't display the 'generated' directory (contains files
-        ## generated by ProteomeXchange).
-        object@cache$pxfiles <- ans[!grepl("generated", ans)]
-    }
-    object@cache$pxfiles
-}
+##' @exportMethod pxfiles
+setMethod("pxfiles", "PXDataset",
+          function(object) {
+              if (is.null(object@cache$pxfiles)) {
+                  ftpdir <- paste0(pxurl(object), "/")
+                  ans <- strsplit(getURL(ftpdir, dirlistonly = TRUE), "\n")[[1]]
+                  if (Sys.info()['sysname'] == "Windows")
+                      ans <- sub("\r$", "", ans)
+                  ## Don't display the 'generated' directory (contains files
+                  ## generated by ProteomeXchange).
+                  object@cache$pxfiles <- ans[!grepl("generated", ans)]
+              }
+              object@cache$pxfiles
+          })
 
-##' @rdname PXDataset
+##' @rdname PXDataset1
 ##'
 ##' @param list `character()`, `numeric()` or `logical()` defining the
 ##'     project files to be downloaded. This list of files can
@@ -258,47 +259,48 @@ pxfiles <- function(object) {
 ##'
 ##' @importFrom utils menu
 ##'
-##' @export
-pxget <- function(object, list, cache = rpxCache()) {
-    fls <- pxfiles(object)
-    url <- pxurl(object)
-    if (missing(list))
-        list <- menu(fls, FALSE, paste0("Files for ", object@id))
-    if (length(list) == 1 && list == "all") {
-        toget <- fls
-    } else {
-        if (is.character(list)) {
-            toget <- fls[fls %in% list]
-        } else toget <- fls[list]
-    }
-    if (length(toget) < 1)
-        stop("No files to download.")
-    toget <- urls <- gsub(" ", "\ ", paste0(url, "/", toget))
-    for (i in 1:length(urls)) {
-            toget[i] <- pxget1(urls[i], cache)
-    }
-    toget
-}
+##' @exportMethod pxget
+setMethod("pxget", "PXDataset",
+          function(object, list, cache = rpxCache()) {
+              fls <- pxfiles(object)
+              url <- pxurl(object)
+              if (missing(list))
+                  list <- menu(fls, FALSE, paste0("Files for ", object@id))
+              if (length(list) == 1 && list == "all") {
+                  toget <- fls
+              } else {
+                  if (is.character(list)) {
+                      toget <- fls[fls %in% list]
+                  } else toget <- fls[list]
+              }
+              if (length(toget) < 1)
+                  stop("No files to download.")
+              toget <- urls <- gsub(" ", "\ ", paste0(url, "/", toget))
+              for (i in seq_along(urls)) {
+                  toget[i] <- pxget1(urls[i], cache)
+              }
+              toget
+          })
 
 
-##' @rdname PXDataset
+##' @rdname PXDataset1
 ##'
-##' @export
-##'
-pxCacheInfo <- function(object, cache = rpxCache()) {
-    rid <- ridFromCache(object)
-    if (is.na(rid)) msg <- "No caching information found."
-    else msg <- paste0("Resource ID ", rid, " in cache in ", object@cache$cachepath, ".")
-    message(msg)
-    invisible(c(rid = rid, cachepath = object@cache$cachepath))
-}
+##' @exportMethod pxCacheInfo
+setMethod("pxCacheInfo", "PXDataset",
+          function(object, cache = rpxCache()) {
+              rid <- ridFromCache1(object)
+              if (is.na(rid)) msg <- "No caching information found."
+              else msg <- paste0("Resource ID ", rid, " in cache in ", object@cache$cachepath, ".")
+              message(msg)
+              invisible(c(rid = rid, cachepath = object@cache$cachepath))
+          })
 
 ## ns10 <- "https://raw.githubusercontent.com/proteomexchange/proteomecentral/master/lib/schemas/proteomeXchange-1.0.xsd"
 ## ns11 <- "https://raw.githubusercontent.com/proteomexchange/proteomecentral/master/lib/schemas/proteomeXchange-1.1.0.xsd"
 ## ns12 <- "https://raw.githubusercontent.com/proteomexchange/proteomecentral/master/lib/schemas/proteomeXchange-1.2.0.xsd"
 ## ns13 <- "https://raw.githubusercontent.com/proteomexchange/proteomecentral/master/lib/schemas/proteomeXchange-1.3.0.xsd"
 
-##' @name PXDataset
+##' @name PXDataset1
 ##'
 ##' @param id `character(1)` containing a valid ProteomeXchange
 ##'     identifier.
@@ -312,13 +314,13 @@ pxCacheInfo <- function(object, cache = rpxCache()) {
 ##' @return The `PXDataset()` constructor returns a cached `PXDataset`
 ##'     object. It thus also modifies the cache used to projet
 ##'     caching, as defined by the `cache` argument.
-PXDataset <- function(id, cache = rpxCache()) {
+PXDataset1 <- function(id, cache = rpxCache()) {
     ## Check if that PX id is already available in BiocFileCache
     rpxId <- paste0(".rpx", id)
     rpath <- bfcquery(cache, rpxId, "rname", exact = TRUE)$rpath
     if (!length(rpath)) {
         ## Query PX identifier
-        message("Querying ProteomeXchange for ", id, "...")
+        message("Querying ProteomeXchange for ", id, " ...", appendLF = FALSE)
         url <- paste0(
             "http://proteomecentral.proteomexchange.org/cgi/GetDataset?ID=",
             id, "&outputMode=XML&test=no")
@@ -346,13 +348,15 @@ PXDataset <- function(id, cache = rpxCache()) {
         ans <- .PXDataset(id = .id,
                           formatVersion = .formatVersion,
                           Data = x)
-        ## Populate object datag
-        message("Retrieving project data...")
-        ans@cache <- list(pxurl = pxurl(ans),
-                          pxref = pxref(ans),
-                          pxfiles = pxfiles(ans),
-                          pxtax = pxtax(ans),
-                          cachepath = bfccache(cache))
+        message(" done")
+        ## Populate object data
+        message("Retrieving project data ", appendLF = FALSE)
+        ans@cache <- list(pxurl = { message(".", appendLF = FALSE); pxurl(ans) },
+                          pxref = { message(".", appendLF = FALSE); pxref(ans) },
+                          pxfiles =  { message(".", appendLF = FALSE); pxfiles(ans) },
+                          pxtax = { message(".", appendLF = FALSE); pxtax(ans) },
+                          cachepath = { message(".", appendLF = FALSE); bfccache(cache) })
+        message(" done")
         ## Add the object to cache
         savepath <- bfcnew(cache, rpxId, ext=".rds")
         saveRDS(ans, savepath)

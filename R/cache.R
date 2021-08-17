@@ -18,8 +18,9 @@
 ##' When projects are cached, they are given a resource name (`rname`)
 ##' composed of the `.rpx` prefix followed by the ProteomeXchange
 ##' identifier. For example, project `PXD000001` is named
-##' `.rpxPXD000001` to avoid any conflicts with other resources that
-##' user-created resources.
+##' `.rpxPXD000001` (`.rpx2PXD000001` for the `PXDataset2` class) to
+##' avoid any conflicts with other resources that user-created
+##' resources.
 ##'
 ##' @return The `rpxCache()` function returns an instance of class
 ##'     `BiocFileCache`. `pxCachedProjects()` invisbly returns a
@@ -40,28 +41,22 @@
 ##' ## BiocFileCache::BiocFileCache()
 ##' my_cache <- BiocFileCache::BiocFileCache(tempfile())
 ##' my_cache
-##' \dontrun{
 ##' px <- PXDataset("PXD000001", cache = my_cache)
-##' pxget(px, "README.txt", cache = my_cache)
-##' }
+##' pxget(px, "erwinia_carotovora.fasta", cache = my_cache)
+##'
 ##'
 ##' ## List of cached projects
-##' pxCachedProjects()
+##' pxCachedProjects() ## default rpx cache
+##' pxCachedProjects(my_cache)
 ##'
 ##' ## To delete project a project from the default cache, first find
 ##' ## its resource id (rid) in the cache
-##' (cache_tbl <- pxCachedProjects())
-##' (rid <- cache_tbl[cache_tbl$rname == ".rpxPXD000001", "rid"][[1]])
-##'
-##' ## Alternatively, extact the information from the project
-##' px <- PXDataset("PXD000001")
 ##' px1_cache_info <- pxCacheInfo(px)
 ##' (rid <- px1_cache_info["rid"])
 ##'
 ##' ## Then remove it with BiocFileCache:: bfcremove()
-##' \dontrun{
-##' BiocFileCache:::bfcremove(rpxCache(), rid)
-##' }
+##' BiocFileCache:::bfcremove(my_cache, rid)
+##' pxCachedProjects(my_cache)
 NULL
 
 ##' @rdname cache
@@ -77,11 +72,18 @@ rpxCache <- function() {
 ##'
 ##' @param cache Object of class `BiocFileCache`.
 ##'
+##' @param rpxprefix `character(1)` defining the resourne name prefix
+##'     in `cache`. Default is `"^\\.rpx(2?)"` to match objects of
+##'     class `PXDataset` and `PXDataset2`.
+##'
 ##' @export
-pxCachedProjects <- function(cache = rpxCache()) {
-    res <- bfcquery(cache, "^.rpx")
-    ids <- sub("^\\.rpx", "", res$rname)
-    message("Cached projects: ", paste(ids, collapse = ", "))
+pxCachedProjects <- function(cache = rpxCache(), rpxprefix = "^\\.rpx(2?)") {
+    res <- bfcquery(cache, rpxprefix, "rname")
+    ids <- grep(rpxprefix, bfcinfo(cache)$rname, value = TRUE)
+    ids <- sub("^\\.rpx(2?)", "", ids)
+    msg <- paste(strwrap(paste0("Cached projects (", length(ids), "): ",
+                               paste(ids, collapse = ", "))), sep = "\n")
+    message(paste(msg, "\n"), appendLF = FALSE)
     invisible(res)
 }
 
@@ -105,7 +107,23 @@ pxget1 <- function(url, cache) {
     bfcrpath(cache, rids = rid)
 }
 
-ridFromCache <- function(object) {
+ridFromCache2 <- function(object) {
+    stopifnot(inherits(object, "PXDataset2"))
+    rid <- bfcquery(BiocFileCache(object@cachepath),
+                    object@px_rid, "rname", exact = TRUE)$rid
+    if (!length(rid)) {
+        warning("Project not found in cache.")
+        rid <- NA
+    }
+    if (length(rid) > 1)
+        stop("Multiple resource ids found.")
+    rid
+}
+
+
+
+ridFromCache1 <- function(object) {
+    stopifnot(inherits(object, "PXDataset"))
     if (is.null(object@cache$cachepath))
         return(NA)
     rid <- bfcquery(BiocFileCache(object@cache$cachepath),
@@ -119,3 +137,10 @@ ridFromCache <- function(object) {
         stop("Multiple resource ids found.")
     rid
 }
+
+
+
+allPXD <- function()
+    sub("^.+projects/", "",
+        grep("PXD", readLines("https://www.ebi.ac.uk/pride/ws/archive/v2/misc/sitemap"),
+             value = TRUE))
