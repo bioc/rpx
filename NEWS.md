@@ -1,20 +1,19 @@
-# rpx 2.3.0
+# rpx 2.2
 
-## rpx 2.3.2
+## rpx 2.2.1
 
 - Provide fix for PRIDE migration and annotation discrepancies (see
   issue #17). This fix will however lead to re-downloading some cached
   files due to different URLs. The fix might only be temporary, based
-  on if/how PRIDE will address their inconsistencies.
-
-## rpx 2.3.1
+  on if/how PRIDE will address their inconsistencies. (backported from
+  devel)
 
 - Use `BiocFileCache::bfcrpath` to get correct rpath, irrespective of
-  absolute or relative.
+  absolute or relative. (backported from devel)
 
-## rpx 2.3.0
+## rpx 2.2.0
 
-- New bioconductor devel branch
+- New bioconductor release branch
 
 # rpx 2.1
 
