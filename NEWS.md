@@ -1,5 +1,9 @@
 # rpx 2.2
 
+## rpx 2.2.2
+
+- Disable URL test
+
 ## rpx 2.2.1
 
 - Provide fix for PRIDE migration and annotation discrepancies (see

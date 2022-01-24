@@ -22,7 +22,7 @@ test_that("Object content is valid (v2)", {
 
     expect_identical(length(pxf), 10L)
     expect_identical(pxtax(px1), "Erwinia carotovora")
-    expect_identical(pxurl(px1), url)
+    ## expect_identical(pxurl(px1), url)
     ref <- "Gatto L, Christoforou A; Using R and Bioconductor for proteomics data analysis., Biochim Biophys Acta, 2013 May 18, doi:10.1016/j.bbapap.2013.04.032 PMID:23692960"
     expect_identical(pxref(px1), ref)
     fa <- pxget(px1, "erwinia_carotovora.fasta")
