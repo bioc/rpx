@@ -4,9 +4,12 @@ test_that("Object content is valid (v2)", {
     id <- "PXD000001"
     expect_null(show(px1))
     expect_identical(pxid(px1), id)
-    ## Assertions manually looked up at
+    ## Remove this as it can be either given the changes in URL
+    ## related to the issue with PRIDE and whether or when the object
+    ## was chached.
     ## url <- "ftp://ftp.pride.ebi.ac.uk/pride/data/archive/2012/03/PXD000001"
-    url <- "ftp://ftp.pride.ebi.ac.uk/pride-archive/2012/03/PXD000001"
+    ## url <- "ftp://ftp.pride.ebi.ac.uk/pride-archive/2012/03/PXD000001"
+    ## expect_identical(pxurl(px1), url)
     pxf <- pxfiles(px1)
     fls <- sort(c("F063721.dat",
                   "F063721.dat-mztab.txt",
@@ -22,7 +25,6 @@ test_that("Object content is valid (v2)", {
 
     expect_identical(length(pxf), 10L)
     expect_identical(pxtax(px1), "Erwinia carotovora")
-    expect_identical(pxurl(px1), url)
     ref <- "Gatto L, Christoforou A; Using R and Bioconductor for proteomics data analysis., Biochim Biophys Acta, 2013 May 18, doi:10.1016/j.bbapap.2013.04.032 PMID:23692960"
     expect_identical(pxref(px1), ref)
     fa <- pxget(px1, "erwinia_carotovora.fasta")
