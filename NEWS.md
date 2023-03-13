@@ -1,5 +1,11 @@
 # rpx 2.6
 
+## rpx 2.6.3
+
+- Delete cached PXD022816 before testing. This avoids failing unit
+  tests when the class and the data are changed. (Backported from
+  devel).
+
 ## rpx 2.6.2
 
 - Delete cached px1 before testing. This avoids failing unit tests
