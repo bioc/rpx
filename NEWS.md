@@ -1,3 +1,14 @@
+# rpx 2.14
+
+## rpx 2.14.1
+
+- Fix error due to remote side change (another one). Backported from
+  2.15.1.
+
+## rpx 2.14.0
+
+- New release version (Bioc 3.20)
+
 # rpx 2.9
 
 ## rpx 2.9.1
