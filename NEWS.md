@@ -1,13 +1,12 @@
-# rpx 2.21
+# rpx 2.20
 
-## rpx 2.21.1
+## rpx 2.20.1
 
 - Fix unit test to address remote changes.
-- Update licence to GPL-3
 
-## rpx 2.21.0
+## rpx 2.29.0
 
-- New devel version
+- New release version
 
 # rpx 2.15
 
