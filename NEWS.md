@@ -1,5 +1,9 @@
 # rpx 2.20
 
+## rpx 2.20.2
+
+- Fix unit test to address remote changes.
+
 ## rpx 2.20.1
 
 - Fix unit test to address remote changes.
